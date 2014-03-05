@@ -24,6 +24,12 @@ call pip install --user -e .
 if not errorlevel 0 goto :eof
 popd
 
+echo Installing gpuinterop
+call pip install --user -e .
+if not errorlevel 0 goto :eof
+popd
+
+
 echo ml_support was installed successfully.
 
 
