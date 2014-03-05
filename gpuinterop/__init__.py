@@ -26,7 +26,7 @@ def set_gnumpy_env():
 
     if theano.config.floatX == 'float32':
         os.environ['GNUMPY_CPU_PRECISION'] = '32'
-    elif heano.config.floatX == 'float64':
+    elif theano.config.floatX == 'float64':
         os.environ['GNUMPY_CPU_PRECISION'] = '64'
     else:
         assert False
