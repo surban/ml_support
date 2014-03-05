@@ -22,6 +22,10 @@ pushd Theano
 pip install --user -e .
 popd
 
+echo Installing gpuinterop
+pip install --user -e .
+
+
 echo ml_support was installed successfully.
 
 

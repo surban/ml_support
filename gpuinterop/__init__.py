@@ -4,6 +4,7 @@
 
 import sys
 import logging
+import os
 
 # logging
 #log_level = logging.DEBUG
@@ -17,6 +18,19 @@ gpu_imported = ('theano' in sys.modules or 'cudamat' in sys.modules or
 if gpu_imported:
     raise ImportError('gpuinterop must be imported before Theano, cudamat, gnumpy, pycuda')
 
+def set_gnumpy_env():
+    if theano.config.device == 'gpu':
+        os.environ['GNUMPY_USE_GPU'] = 'yes'
+    else:
+        os.environ['GNUMPY_USE_GPU'] = 'no'
+
+    if theano.config.floatX == 'float32':
+        os.environ['GNUMPY_CPU_PRECISION'] = '32'
+    elif heano.config.floatX == 'float64':
+        os.environ['GNUMPY_CPU_PRECISION'] = '64'
+    else:
+        assert False
+
 # the import order is important
 import_success = False
 try:
@@ -26,26 +40,31 @@ try:
     import pycuda.gpuarray
     log.debug("importing cudamat")
     import cudamat
-
+    log.debug("importing theano.sandbox.cuda")
+    import theano.sandbox.cuda
+    log.debug("importing theano")
+    import theano
+    set_gnumpy_env()
+    log.debug("importing gnumpy")
+    import gnumpy
+    log.debug("importing theano.tensor")
+    import theano.tensor
+    log.debug("importing theano.sandbox.cuda")
+    import theano.sandbox.cuda
+    log.debug("importing theano.misc.gnumpy_utils")
+    import theano.misc.gnumpy_utils as gput
+ 
     import_success = True
-except ImportError, e:
-    print "common.gpu: GPU imports failed: ", e
+except Exception as e:
+    import_excpt = e
+    log.debug("import failed: " + str(e))
 
-log.debug("importing theano.sandbox.cuda")
-import theano.sandbox.cuda
-log.debug("importing gnumpy")
-import gnumpy
-log.debug("importing theano")
-import theano
-log.debug("importing theano.tensor")
-import theano.tensor
-log.debug("importing theano.sandbox.cuda")
-import theano.sandbox.cuda
-log.debug("importing theano.misc.gnumpy_utils")
-import theano.misc.gnumpy_utils as gput
+    import theano
+    set_gnumpy_env()
+    import gnumpy
 
 # test if gpu is available and also used by Theano
 using_gpu = (theano.config.device == 'gpu')
-if not import_success:
-    using_gpu = False
+if using_gpu and not import_success:
+    raise ImportError("Theano is configured to use the GPU but importing GPU modules failed: " + str(e))
 log.debug("gpuinterop.using_gpu=%s" % str(using_gpu))
