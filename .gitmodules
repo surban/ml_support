@@ -1,12 +1,12 @@
 [submodule "Theano"]
 	path = Theano
-	url = git@github.com:surban/Theano.git
+	url = https://github.com/surban/Theano.git
 [submodule "cudamat"]
 	path = cudamat
-	url = git@github.com:surban/cudamat.git
+	url = https://github.com/surban/cudamat.git
 [submodule "pycuda"]
 	path = pycuda
-	url = git@github.com:surban/pycuda.git
+	url = https://github.com/surban/pycuda.git
 [submodule "gnumpy"]
 	path = gnumpy
-	url = git@github.com:surban/gnumpy.git
+	url = https://github.com/surban/gnumpy.git
